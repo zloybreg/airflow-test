@@ -9,18 +9,24 @@
 * Дополнительно ставил pip пакет "typing_extensions".
 * Настройки по конфигурации сервера Airflow не стал менять ради экономии времени. Да и народ говорит, что почти prod-ready 
 
-## Установка
+## Запуск
 
+Основной образ лежит в Docker Hub. "Поднять" вебсервер можно сразу запустив команду:
+
+    docker-compose up --build
+
+- Airflow: [localhost:8080](http://localhost:8080/)
+
+## Установка
 Образ с Ubuntu 18.04 лежит в папке *ubuntu_image*.
     
     cd ubuntu_image
     docker build --rm -t zloybreg/ubuntu:18.04 .
-
+    
 Далее переходим в корневую папку и "собираем" проект
 
-    docker-compose up
+    docker-compose up --build
 
-- Airflow: [localhost:8080](http://localhost:8080/)
 
 ## Тестовые DAGи
 Тестовые даги лежат в папке *./dags* метафайлы для конфигурации DAGов в папке *./meta*  
