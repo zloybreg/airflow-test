@@ -1,10 +1,13 @@
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.bash_operator import BashOperator
+from airflow.operators.branch_operator import BaseBranchOperator
+from airflow.operators.python_operator import PythonOperator, BranchPythonOperator
 from airflow.models import Variable
 
 from datetime import timedelta, datetime
 import json
+import random
 
 
 def create_dag(_dag_name: str, _default_args: dict) -> DAG:
@@ -22,7 +25,7 @@ def create_dag(_dag_name: str, _default_args: dict) -> DAG:
     return _dag
 
 
-def create_bash_task(_task_id: str, _bash_command: str, _params: dict, _dag: DAG) -> BashOperator:
+def create_bash_task(_task_id: str, _bash_command: str, _params: dict, _dag: DAG, _xcom: bool) -> BashOperator:
     """
     Создаем таски
 
@@ -30,6 +33,7 @@ def create_bash_task(_task_id: str, _bash_command: str, _params: dict, _dag: DAG
     :param _bash_command: bash команда для таска
     :param _params: перменные для заполнения Jinja шаблонов
     :param _dag: DAG
+    :param _xcom: коммуникация между тасками
 
     :return: BashOperator
     """
@@ -38,6 +42,7 @@ def create_bash_task(_task_id: str, _bash_command: str, _params: dict, _dag: DAG
         bash_command=_bash_command,
         params=_params,
         dag=_dag,
+        xcom_push=_xcom
     )
 
     return _task
@@ -92,8 +97,19 @@ default_args = {
     "retry_delay": timedelta(minutes=int(default_args["retry_delay"]))
 }
 
+
+def branch_func(**context):
+    """
+    функция ветвления между тасками
+    :param context:
+    :return: название тасков
+    """
+    # выбираем рандомно любой таск из нашего списка
+    return random.choice([_task['task_id'] for _task in tasks])
+
+
 # создаем DAG
-dag = create_dag(dag_name, default_args)
+dag = create_dag('branch_many_to_many', default_args)
 
 # пустой Таск для начала
 start_task = DummyOperator(
@@ -107,9 +123,20 @@ end_task = DummyOperator(
     dag=dag
 )
 
+branch_task = BranchPythonOperator(
+    task_id='branch_operator',
+    dag=dag,
+    provide_context=True,
+    python_callable=branch_func
+)
+
+
 # создаем Таски
 for i, task in enumerate(tasks):
-    my_task = create_bash_task(task['task_id'], task['command'], task['params'], dag)
+    my_task1 = create_bash_task(task['task_id'], task['command'], task['params'], dag,
+                                task['xcom'])
 
-    start_task >> my_task
-    my_task >> end_task
+    my_task2 = create_bash_task('{}_{}'.format(i, task['task_id']), task['command'], task['params'], dag,
+                                task['xcom'])
+
+    start_task >> branch_task >> my_task1 >> my_task2 >> end_task

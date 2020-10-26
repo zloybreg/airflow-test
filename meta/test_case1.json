@@ -13,22 +13,26 @@
     "tasks": [{
             "task_id": "Hello",
             "command": "echo \"Hello\"",
-            "params": null
+            "params": null,
+            "xcom": false
         },
         {
             "task_id": "World",
             "command": "echo \"World\"",
-            "params": null
+            "params": null,
+            "xcom": true
         },
         {
             "task_id": "Date",
             "command": "echo \"World\"",
-            "params": null
+            "params": null,
+            "xcom": false
         },
         {
             "task_id": "Template",
             "command": "echo \"{{ params.my_param }}\"",
-            "params": { "my_param": "Parameter I passed in" }
+            "params": { "my_param": "Parameter I passed in" },
+            "xcom": false
         }
     ]
 }

@@ -81,7 +81,7 @@ RUN pip install typing_extensions \
 
 COPY script/entrypoint.sh /entrypoint.sh
 RUN mkdir /usr/local/airflow/utils
-COPY utils /usr/local/airflow/utils
+COPY dags/utils /usr/local/airflow/utils
 COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
 
 WORKDIR /usr/local/airflow

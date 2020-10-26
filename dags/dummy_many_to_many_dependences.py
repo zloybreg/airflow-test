@@ -93,7 +93,7 @@ default_args = {
 }
 
 # создаем DAG
-dag = create_dag(dag_name, default_args)
+dag = create_dag('dummy_many_to_many', default_args)
 
 # пустой Таск для начала
 start_task = DummyOperator(
@@ -108,8 +108,8 @@ end_task = DummyOperator(
 )
 
 # создаем Таски
-for i, task in enumerate(tasks):
-    my_task = create_bash_task(task['task_id'], task['command'], task['params'], dag)
+for task in tasks:
+    my_task1 = create_bash_task('{}-first_line'.format(task['task_id']), task['command'], task['params'], dag)
+    my_task2 = create_bash_task('{}-second_line'.format(task['task_id']), task['command'], task['params'], dag)
 
-    start_task >> my_task
-    my_task >> end_task
+    start_task >> my_task1 >> my_task2 >> end_task
