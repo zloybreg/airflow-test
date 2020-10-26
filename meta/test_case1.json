@@ -1,0 +1,34 @@
+{
+    "dag_name": "test_case1",
+    "default_args": {
+        "owner": "airflow",
+        "depends_on_past": false,
+        "start_date": "24102020",
+        "email": ["airflow@airflow.com"],
+        "email_on_failure": false,
+        "email_on_retry": false,
+        "retries": 1,
+        "retry_delay": 5
+    },
+    "tasks": [{
+            "task_id": "Hello",
+            "command": "echo \"Hello\"",
+            "params": null
+        },
+        {
+            "task_id": "World",
+            "command": "echo \"World\"",
+            "params": null
+        },
+        {
+            "task_id": "Date",
+            "command": "echo \"World\"",
+            "params": null
+        },
+        {
+            "task_id": "Template",
+            "command": "echo \"{{ params.my_param }}\"",
+            "params": { "my_param": "Parameter I passed in" }
+        }
+    ]
+}
