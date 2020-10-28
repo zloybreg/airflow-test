@@ -23,7 +23,8 @@ services:
         environment:
             - LOAD_EX=n
             - EXECUTOR=Local
-            - AIRFLOW_VAR_META_PATH=./meta/test_case1.json
+            - AIRFLOW_VAR_META_PATH1=./meta/meta_file1.json
+            - AIRFLOW_VAR_META_PATH2=./meta/meta_file2.json
         logging:
             options:
                 max-size: 10m
