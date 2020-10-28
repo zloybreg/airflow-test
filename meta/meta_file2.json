@@ -1,0 +1,49 @@
+{
+	"dag_name": "hard_test",
+	"default_args": {
+		"owner": "airflow",
+		"start_date": "24102020",
+		"email": ["airflow@airflow.com"]
+	},
+	"tasks": [
+		{
+			"task_id": "First",
+			"trigger_rule": "all_success",
+			"operator_type": "branch",
+			"command": "branch"
+		},
+		{
+			"task_id": "Second",
+			"trigger_rule": "all_success",
+			"operator_type": "python",
+			"command": "producer"
+		},
+		{
+			"task_id": "Third",
+			"trigger_rule": "all_success",
+			"operator_type": "python",
+			"command": "consumer"
+		},
+		{
+			"task_id": "Fourth",
+			"trigger_rule": "all_success",
+			"operator_type": "bash",
+			"command": "echo \"{{ params.my_param }}\"",
+			"params": { "my_param": "Parameter I passed in" }
+		}
+	],
+	"dependencies": [
+		{
+			"task_id_from": "First",
+			"task_id_to": "Second"
+		},
+		{
+			"task_id_from": "First",
+			"task_id_to": "Fourth"
+		},
+		{
+			"task_id_from": "Second",
+			"task_id_to": "Third"
+		}
+	]
+}

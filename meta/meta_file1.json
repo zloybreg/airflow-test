@@ -1,0 +1,56 @@
+{
+	"dag_name": "base_test",
+	"default_args": {
+		"owner": "airflow",
+		"start_date": "24102020",
+		"email": ["airflow@airflow.com"]
+	},
+	"tasks": [
+		{
+			"task_id": "First",
+			"trigger_rule": "all_success",
+			"operator_type": "bash",
+			"command": " echo $(date) "
+		},
+		{
+			"task_id": "Second",
+			"trigger_rule": "all_success",
+			"operator_type": "bash",
+			"command": " echo $(date) "
+		},
+		{
+			"task_id": "Third",
+			"trigger_rule": "all_success",
+			"operator_type": "bash",
+			"command": " echo $(date) "
+		},
+		{
+			"task_id": "Fourth",
+			"trigger_rule": "all_success",
+			"operator_type": "bash",
+			"command": " echo $(date) "
+		}
+	],
+	"dependencies": [
+		{
+			"task_id_from": "First",
+			"task_id_to": "Second"
+		},
+		{
+			"task_id_from": "First",
+			"task_id_to": "Third"
+		},
+		{
+			"task_id_from": "Second",
+			"task_id_to": "Third"
+		},
+		{
+			"task_id_from": "Second",
+			"task_id_to": "Fourth"
+		},
+		{
+			"task_id_from": "Third",
+			"task_id_to": "Fourth"
+		}
+	]
+}
